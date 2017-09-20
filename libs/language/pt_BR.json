@@ -18,6 +18,9 @@
         "categoriaExistente": "Já existe uma categoria com o nome e tipo informado.",
         "vinculadaLancamento": "Categoria não pode ser excluída por estar vinculada a um lançamento."
     },
+    "conta": {
+        "contaExistente": "Já existe uma conta com o nome e tipo informado."
+    },
     "joi": {
         "any": {
             "unknown": "não é permitido",

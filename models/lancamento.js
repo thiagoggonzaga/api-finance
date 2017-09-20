@@ -48,7 +48,7 @@ module.exports = (sequelize, DataType) => {
 			foreignKey: 'cod_conta',
 			targetKey: 'codigo',
 			onUpdate: 'RESTRICT',
-			onDelete: 'RESTRICT',
+			onDelete: 'CASCADE',
 			constraints: true
 		});
 

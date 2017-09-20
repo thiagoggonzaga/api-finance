@@ -18,6 +18,9 @@
         "categoriaExistente": "A category with the given name and type already exists.",
         "vinculadaLancamento": "Category can not be deleted because it is linked to a post."
     },
+    "conta": {
+        "contaExistente": "An account with name and type already exists."
+    },
     "joi": {
         "any": {
             "unknown": "is not allowed",

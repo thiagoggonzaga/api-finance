@@ -1,4 +1,3 @@
-var tratamentoErro = require('../libs/componentes/tratamentoErros');
 var sequelize = require('sequelize');
 
 module.exports = app => {

@@ -1,9 +1,11 @@
 var validate = require('express-validation');
 var vConta = require('./validation/conta');
 var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var sequelize = require('sequelize');
 
 module.exports = app => {
     const Conta = app.db.models.Conta;
+    const ServicoConta = app.services.conta;
     const config = app.libs.config;
 
     app.route('/conta').all(app.auth.authenticate());
@@ -63,9 +65,9 @@ module.exports = app => {
         Conta.findAndCountAll({
             attributes: ['codigo', 'nome', 'tipo', 'situacao'],
             where: {
-                nome: {
-                    $like: '%' + (req.query.nome || '') + '%'
-                },
+                nome: sequelize.where(sequelize.fn('lower', sequelize.col('nome')), {
+                    $like: sequelize.fn('lower', '%' + (req.query.nome || '') + '%')
+                }),
                 cod_usuario: req.user.codigo,
                 situacao: req.query.situacao
             },
@@ -132,10 +134,20 @@ module.exports = app => {
         // Seta o ID do usuário logado para criação da conta
         req.body.cod_usuario = req.user.codigo;
 
-        Conta.create(req.body).then(result => {
-            res.json(result)
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
+        ServicoConta.existeContaComMesmoNomeEhTipo(req.body).then(contaExistente => {
+
+            if (!contaExistente) {
+                Conta.create(req.body).then(result => {
+                    res.json(result)
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.status(412).json({
+                    sucesso: false,
+                    mensagem: t('conta').contaExistente
+                });
+            }
         });
     });
 
@@ -268,6 +280,7 @@ module.exports = app => {
      *      HTTP/1.1 401 Unauthorized
      */
     app.delete('/conta/:id', validate(vConta.delete), (req, res) => {
+
         Conta.destroy({
             where: {
                 codigo: req.params.id,

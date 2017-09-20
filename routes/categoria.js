@@ -1,6 +1,7 @@
 var validate = require('express-validation');
 var vCategoria = require('./validation/categoria');
 var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var sequelize = require('sequelize');
 
 module.exports = app => {
     const Categoria = app.db.models.Categoria;
@@ -60,9 +61,9 @@ module.exports = app => {
         Categoria.findAndCountAll({
             attributes: ['codigo', 'nome', 'tipo'],
             where: {
-                nome: {
-                    $like: '%' + (req.query.nome || '') + '%'
-                },
+                nome: sequelize.where(sequelize.fn('lower', sequelize.col('nome')), {
+                    $like: sequelize.fn('lower', '%' + (req.query.nome || '')  + '%')
+                }),
                 cod_usuario: req.user.codigo
             },
             order: ['nome'],
