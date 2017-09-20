@@ -4,8 +4,8 @@
   "description": "Finance API",
   "main": "index.js",
   "scripts": {
-    "start": "npm run apidoc && nodemon index.js",
-    "clusters": "nodemon clusters.js",
+    "start": "node index.js",
+    "clusters": "node clusters.js",
     "apidoc": "apidoc -i routes/ -o public/apidoc",
     "debug": "nodemon --inspect=5858 index.js"
   },
