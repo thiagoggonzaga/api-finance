@@ -6,7 +6,7 @@ module.exports = {
     port: 3000,
     database: 'finance',
     username: 'finance_user',
-    password: 'th14g02010',
+    password: 'gerdata1234',
     params: {
         host: 'mysql552.umbler.com',
         dialect: 'mysql',
