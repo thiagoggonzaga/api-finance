@@ -7,13 +7,12 @@ module.exports = app => {
     return {
         verifiqueEmailExistente: (email) => {
 
-            return Usuario.findAll({
-                attributes: [[sequelize.fn('COUNT', sequelize.col('email')), 'email_existente']],
+            return Usuario.count({
                 where: {
                     email: email
                 }
-            }).then((result) => {
-                return result[0].dataValues.email_existente > 0;
+            }).then((count) => {
+                return count > 0;
             });
         }
     }

@@ -11,9 +11,8 @@ module.exports = app => {
         jwtFromRequest: ExtractJwt.fromAuthHeader()
     };
 
-    const strategy = new JwtStrategy(opts, function(payload, done) {
-        Usuario.findById(payload.codigo)
-        .then(usuario => {
+    const strategy = new JwtStrategy(opts, function (payload, done) {
+        Usuario.findById(payload.codigo).then(usuario => {
             if (usuario) {
                 return done(null, {
                     codigo: usuario.codigo,
@@ -21,8 +20,9 @@ module.exports = app => {
                 });
             }
             return done(null, false);
-        })
-        .catch(error => done(error, null));
+        }).catch(error => {
+            done(error, null)
+        });
     });
 
     passport.use(strategy);

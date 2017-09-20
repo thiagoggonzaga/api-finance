@@ -14,6 +14,10 @@
     "usuario": {
         "emailEmUso": "E-mail já está sendo utilizado."
     },
+    "categoria": {
+        "categoriaExistente": "Já existe uma categoria com o nome e tipo informado.",
+        "vinculadaLancamento": "Categoria não pode ser excluída por estar vinculada a um lançamento."
+    },
     "joi": {
         "any": {
             "unknown": "não é permitido",

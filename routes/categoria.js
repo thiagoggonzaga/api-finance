@@ -4,6 +4,7 @@ var tratamentoErro = require('../libs/componentes/tratamentoErros');
 
 module.exports = app => {
     const Categoria = app.db.models.Categoria;
+    const ServicoCategoria = app.services.categoria;
     const config = app.libs.config;
 
     app.route('/categoria').all(app.auth.authenticate());
@@ -126,11 +127,22 @@ module.exports = app => {
         // Seta o ID do usuário logado para criação da categoria
         req.body.cod_usuario = req.user.codigo;
 
-        Categoria.create(req.body)
-            .then(result => res.json(result))
-            .catch(error => {
-                res.status(412).json({ msg: error.message });
-            });
+        ServicoCategoria.existeCategoriaComMesmoNomeEhTipo(req.body).then(categoriaExistente => {
+
+            if (!categoriaExistente) {
+                Categoria.create(req.body).then(result => {
+                    res.json(result)
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.status(412).json({
+                    sucesso: false,
+                    mensagem: t('categoria').categoriaExistente
+                });
+            }
+        });
+
     });
 
     /**
@@ -259,18 +271,29 @@ module.exports = app => {
      *      HTTP/1.1 401 Unauthorized
      */
     app.delete('/categoria/:id', validate(vCategoria.delete), (req, res) => {
-        Categoria.destroy({
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
+
+        ServicoCategoria.categoriaVinculadoLancamento(req.params.id, req.user.codigo).then((possuiVinculo) => {
+
+            if (!possuiVinculo) {
+                Categoria.destroy({
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(result => {
+                    return res.json({
+                        sucesso: true,
+                        mensagem: __mf('mensagem.exclusao', t('label').categoria)
+                    });
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.status(412).json({
+                    sucesso: false,
+                    mensagem: t('categoria').vinculadaLancamento
+                });
             }
-        }).then(result => {
-            return res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.exclusao', t('label').categoria)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
         });
     });
 

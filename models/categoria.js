@@ -26,7 +26,12 @@ module.exports = (sequelize, DataType) => {
 			timestamps: false,
 			createdAt: false,
 			updatedAt: false,
-			underscored: true
+			underscored: true,
+			indexes: [{
+				name: 'idx_categoria_nome_tipo_unico',
+				unique: true,
+				fields: ['nome', 'tipo', 'cod_usuario']
+			}]
 		});
 
 	Categoria.associate = function (models) {
