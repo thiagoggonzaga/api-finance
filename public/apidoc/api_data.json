@@ -1,0 +1,1472 @@
+[
+  {
+    "type": "delete",
+    "url": "/categoria/:id",
+    "title": "Exclui uma categoria",
+    "version": "1.0.0",
+    "group": "Categoria",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da categoria [Obrigatório]</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Categoria removida com sucesso'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/categoria.js",
+    "groupTitle": "Categoria",
+    "name": "DeleteCategoriaId"
+  },
+  {
+    "type": "get",
+    "url": "/categoria",
+    "title": "Lista de Categorias",
+    "version": "1.0.0",
+    "group": "Categoria",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number[1..25]",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>Número máximo de registros para retorno</p>"
+          },
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>Início da leitura dos registros</p>"
+          },
+          {
+            "group": "Query Params",
+            "type": "String[60]",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome completo/parcial para filtro</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo ",
+          "content": "https://api.gerdata.com.br/categoria?limit=25&offset=0&nome=Alimentação",
+          "type": "text"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>Total de itens cadastrados</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>Máximo de itens retornados</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>Início do cursor para buscar paginadas</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "data",
+            "description": "<p>Lista de objetos da Categoria</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "data.codigo",
+            "description": "<p>Código da Categoria</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.nome",
+            "description": "<p>Nome da Categoria</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
+            ],
+            "optional": false,
+            "field": "data.tipo",
+            "description": "<p>Tipo da Categoria</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    total: 2, \n    limit: 25,\n    offset: 0,\n    data: [{\n        'codigo': 1,\n        'nome': 'Alimentação',\n        'tipo': 0\n    },\n    {\n        'codigo': 2,\n        'nome': 'Salário',\n        'tipo': 1\n    }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/categoria.js",
+    "groupTitle": "Categoria",
+    "name": "GetCategoria"
+  },
+  {
+    "type": "get",
+    "url": "/categoria/:id",
+    "title": "Obter categoria",
+    "version": "1.0.0",
+    "group": "Categoria",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da categoria [Obrigatório]</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo ",
+          "content": "https://api.gerdata.com.br/categoria/2",
+          "type": "text"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da Categoria</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da categoria</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 1,\n    'nome': 'Transporte',\n    'tipo': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Categoria não existe",
+          "content": "HTTP/1.1 404 Not Found",
+          "type": "json"
+        },
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/categoria.js",
+    "groupTitle": "Categoria",
+    "name": "GetCategoriaId"
+  },
+  {
+    "type": "post",
+    "url": "/categoria",
+    "title": "Cadastro de Categorias",
+    "version": "1.0.0",
+    "group": "Categoria",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "60",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da categoria [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da Categoria [Obrigatório]</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{ \n    'nome': 'Transporte',\n    'tipo': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da categoria</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da categoria</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 1,\n    'nome': 'Transporte',\n    'tipo': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Pré-requisitos não preenchidos",
+          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'nome',\n            mensagens: [\n                'O campo \"Nome\" deve ser informado',\n                'O campo \"Nome\" deve conter no mínimo 2 caracteres'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/categoria.js",
+    "groupTitle": "Categoria",
+    "name": "PostCategoria"
+  },
+  {
+    "type": "put",
+    "url": "/categoria/:id",
+    "title": "Atualiza uma Categoria",
+    "version": "1.0.0",
+    "group": "Categoria",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da categoria [Obrigatório]</p>"
+          }
+        ],
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "60",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da categoria [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da categoria [Obrigatório]</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Url ",
+          "content": "https://api.gerdata.com.br/categoria/2",
+          "type": "text"
+        },
+        {
+          "title": "Corpo da Requisição",
+          "content": "{\n    'nome': 'Transporte Escolar',\n    'tipo': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Categoria atualizada com sucesso'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Pré-requisitos não preenchidos",
+          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'nome',\n            mensagens: [\n                'O campo \"Nome\" deve ser informado',\n                'O campo \"Nome\" deve conter no mínimo 2 caracteres'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/categoria.js",
+    "groupTitle": "Categoria",
+    "name": "PutCategoriaId"
+  },
+  {
+    "type": "delete",
+    "url": "/conta/:id",
+    "title": "Exclui uma conta",
+    "version": "1.0.0",
+    "group": "Conta",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da conta [Obrigatório]</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Conta removida com sucesso'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/conta.js",
+    "groupTitle": "Conta",
+    "name": "DeleteContaId"
+  },
+  {
+    "type": "get",
+    "url": "/conta",
+    "title": "Lista de Contas",
+    "version": "1.0.0",
+    "group": "Conta",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number[1..25]",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>Número máximo de registros para retorno</p>"
+          },
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>Início da leitura dos registros</p>"
+          },
+          {
+            "group": "Query Params",
+            "type": "String[60]",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome completo/parcial para filtro</p>"
+          },
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "defaultValue": "0",
+            "description": "<p>Situação da conta</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo ",
+          "content": "https://api.gerdata.com.br/conta?limit=25&offset=0&nome=Alimentação&situacao=0",
+          "type": "text"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>Total de itens cadastrados</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>Máximo de itens retornados</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>Início do cursor para buscar paginadas</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "data",
+            "description": "<p>Lista de objetos da Conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "data.codigo",
+            "description": "<p>Código da Conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.nome",
+            "description": "<p>Nome da Conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Conta Corrente\"",
+              "\"1 - Conta Poupança\"",
+              "\"2 - Cartão de Crédito\""
+            ],
+            "optional": false,
+            "field": "data.tipo",
+            "description": "<p>Tipo da Conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "data.situacao",
+            "description": "<p>Situação da conta</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    total: 2, \n    limit: 25,\n    offset: 0,\n    data: [{\n        'codigo': 1,\n        'nome': 'Banco do Brasil',\n        'tipo': 0,\n        'situacao': 0\n    },\n    {\n        'codigo': 2,\n        'nome': 'Nubank',\n        'tipo': 2,\n        'situacao': 0\n    }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/conta.js",
+    "groupTitle": "Conta",
+    "name": "GetConta"
+  },
+  {
+    "type": "get",
+    "url": "/conta/:id",
+    "title": "Obter conta",
+    "version": "1.0.0",
+    "group": "Conta",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da conta [Obrigatório]</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo ",
+          "content": "https://api.gerdata.com.br/conta/2",
+          "type": "text"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Conta Corrente\"",
+              "\"1 - Conta Poupança\"",
+              "\"2 - Cartão de Crédito\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "description": "<p>Situação da conta</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 2,\n    'nome': 'Nubank',\n    'tipo': 2,\n    'situacao': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Conta não existe",
+          "content": "HTTP/1.1 404 Not Found",
+          "type": "json"
+        },
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/conta.js",
+    "groupTitle": "Conta",
+    "name": "GetContaId"
+  },
+  {
+    "type": "post",
+    "url": "/conta",
+    "title": "Cadastro de Contas",
+    "version": "1.0.0",
+    "group": "Conta",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "150",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da conta [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Conta Corrente\"",
+              "\"1 - Conta Poupança\"",
+              "\"2 - Cartão de Crédito\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da Conta [Obrigatório]</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{ \n    'nome': 'Banco do Brasil',\n    'tipo': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Conta Corrente\"",
+              "\"1 - Conta Poupança\"",
+              "\"2 - Cartão de Crédito\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da conta</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "description": "<p>Situação da conta</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 1,\n    'nome': 'Banco do Brasil',\n    'tipo': 0,\n    'situacao': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Pré-requisitos não preenchidos",
+          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'nome',\n            mensagens: [\n                'O campo \"Nome\" deve ser informado'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/conta.js",
+    "groupTitle": "Conta",
+    "name": "PostConta"
+  },
+  {
+    "type": "put",
+    "url": "/conta/:id",
+    "title": "Atualiza uma Conta",
+    "version": "1.0.0",
+    "group": "Conta",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Query Params": [
+          {
+            "group": "Query Params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Código da conta [Obrigatório]</p>"
+          }
+        ],
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "150",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome da conta [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Conta Corrente\"",
+              "\"1 - Conta Poupança\"",
+              "\"2 - Cartão de Crédito\""
+            ],
+            "optional": false,
+            "field": "tipo",
+            "description": "<p>Tipo da Conta [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "defaultValue": "0",
+            "description": "<p>Situação da conta</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Url ",
+          "content": "https://api.gerdata.com.br/conta/2",
+          "type": "text"
+        },
+        {
+          "title": "Corpo da Requisição",
+          "content": "{\n    'nome': 'Nubank 2',\n    'tipo': 2,\n    'situacao': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Conta atualizada com sucesso'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Pré-requisitos não preenchidos",
+          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'nome',\n            mensagens: [\n                'O campo \"Nome\" deve ser informado'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/conta.js",
+    "groupTitle": "Conta",
+    "name": "PutContaId"
+  },
+  {
+    "type": "post",
+    "url": "/token",
+    "title": "Token autenticado",
+    "version": "1.0.0",
+    "group": "Credencial",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email de usuário</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "senha",
+            "description": "<p>Senha de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{\n    'email': 'thiago@gerdata.com.br',\n    'senha': '123456'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "dataCadastro",
+            "description": "<p>Data do cadastro do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "description": "<p>Situação do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token do usuário autenticado</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': '1',\n    'nome': 'Thiago G. Gonzaga',\n    'email': 'thiago@gerdata.com.br',\n    'dataCadastro': \"2017-09-13T23:42:35.000Z\",\n    'situacao': 0,\n    'token': 'xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de autenticação",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/token.js",
+    "groupTitle": "Credencial",
+    "name": "PostToken"
+  },
+  {
+    "type": "get",
+    "url": "/",
+    "title": "API Status",
+    "group": "Status",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Mensagem de status da API</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "versao",
+            "description": "<p>Versão da API</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n  {\n      'status': 'Finance API',\n      'versao': '1.0'\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "1.0.0",
+    "filename": "routes/index.js",
+    "groupTitle": "Status",
+    "name": "Get"
+  },
+  {
+    "type": "get",
+    "url": "/usuario",
+    "title": "Exibe usuário autenticado",
+    "version": "1.0.0",
+    "group": "Usuario",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header",
+          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "dataCadastro",
+            "description": "<p>Data do cadastro do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "description": "<p>Situação do usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 1,\n    'nome': 'Thiago G. Gonzaga',\n    'email': 'thiago@gerdata.com.br',\n    'dataCadastro': \"2017-09-13T23:42:35.000Z\",\n    'situacao': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro de consulta",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "Usuário não autenticado",
+          "content": "HTTP/1.1 401 Unauthorized",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/usuario.js",
+    "groupTitle": "Usuario",
+    "name": "GetUsuario"
+  },
+  {
+    "type": "post",
+    "url": "/usuario",
+    "title": "Cadastra novo usuário",
+    "version": "1.0.0",
+    "group": "Usuario",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome do Usuário</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email de acesso</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "senha",
+            "description": "<p>Senha para acesso a api</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Exemplo",
+          "content": "{\n    'nome': 'Thiago G. Gonzaga',\n    'email': 'thiago@gerdata.com.br',\n    'senha': '123456'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "codigo",
+            "description": "<p>Código de registro</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "nome",
+            "description": "<p>Nome do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "dataCadastro",
+            "description": "<p>Data do cadastro do usuário</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "allowedValues": [
+              "\"0 - Ativo\"",
+              "\"1 - Inativo\""
+            ],
+            "optional": false,
+            "field": "situacao",
+            "description": "<p>Situação do usuário</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Sucesso",
+          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 1,\n    'nome': 'Thiago G. Gonzaga',\n    'email': 'thiago@gerdata.com.br',\n    'dataCadastro': \"2017-09-13T23:42:35.000Z\",\n    'situacao': 0\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Erro no cadastro",
+          "content": "HTTP/1.1 412 Precondition Failed",
+          "type": "json"
+        },
+        {
+          "title": "E-mail existente",
+          "content": "HTTP/1.1 412 \n{\n    sucesso: false,\n    mensagem: 'E-mail já está sendo utilizado.'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/usuario.js",
+    "groupTitle": "Usuario",
+    "name": "PostUsuario"
+  }
+]
