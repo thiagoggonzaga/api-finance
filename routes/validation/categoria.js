@@ -4,8 +4,8 @@ var Joi = require('joi');
 
 module.exports.post = {
     body: {
-        nome: Joi.string().required().min(2).max(60).label('Nome'),
-        tipo: Joi.number().required().valid(0, 1).label('Tipo da Categoria')
+        nome: Joi.string().required().min(2).max(60),
+        tipo: Joi.number().required().valid(0, 1)
     },
     params: {
         id: Joi.number().integer()

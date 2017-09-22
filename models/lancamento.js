@@ -26,13 +26,13 @@ module.exports = (sequelize, DataType) => {
 			field: 'tipo'
 		},
 		dataEmissao: {
-			type: DataType.DATE,
+			type: DataType.DATEONLY,
 			allowNull: true,
 			field: 'data_emissao'
 		},
 		dataVencimento: {
-			type: DataType.DATE,
-			allowNull: true,
+			type: DataType.DATEONLY,
+			allowNull: false,
 			field: 'data_vencimento'
 		}
 	}, {
@@ -47,19 +47,31 @@ module.exports = (sequelize, DataType) => {
 		Lancamento.belongsTo(models.Conta, {
 			foreignKey: 'cod_conta',
 			targetKey: 'codigo',
-			onUpdate: 'RESTRICT',
+			onUpdate: 'NO ACTION',
 			onDelete: 'CASCADE',
-			constraints: true
+			constraints: true,
+			allowNull: false,
+			as: 'conta'
 		});
 
 		Lancamento.belongsTo(models.Categoria, {
-			foreignKey: {
-				name: 'cod_categoria',
-				targetKey: 'codigo',
-				onUpdate: 'RESTRICT',
-				onDelete: 'RESTRICT',
-				constraints: true
-			}
+			foreignKey: 'cod_categoria',
+			targetKey: 'codigo',
+			onUpdate: 'RESTRICT',
+			onDelete: 'RESTRICT',
+			constraints: true,
+			allowNull: false,
+			as: 'categoria'
+		});
+
+		Lancamento.belongsTo(models.Usuario, {
+			foreignKey: 'cod_usuario',
+			targetKey: 'codigo',
+			onUpdate: 'RESTRICT',
+			onDelete: 'RESTRICT',
+			constraints: true,
+			allowNull: false,
+			as: 'usuario'
 		});
 	};
 

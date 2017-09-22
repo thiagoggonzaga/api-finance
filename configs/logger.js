@@ -14,7 +14,9 @@ module.exports = new winston.Logger({
             filename: 'logs/app-info.log',
             maxsize: 1048576,
             maxFiles: 10,
-            colorize: false
+            colorize: false,
+            handleExceptions: true,
+            json: true
         }),
         new winston.transports.File({
             name: 'app-error',
@@ -22,7 +24,9 @@ module.exports = new winston.Logger({
             filename: 'logs/app-error.log',
             maxsize: 1048576,
             maxFiles: 10,
-            colorize: false
+            colorize: false,
+            handleExceptions: true,
+            json: true
         })        
     ],
     exceptionHandlers: [
@@ -30,7 +34,9 @@ module.exports = new winston.Logger({
             filename: 'logs/app-exception.log',
             maxsize: 1048576,
             maxFiles: 10,
-            colorize: false
+            colorize: false,
+            handleExceptions: true,
+            json: true
         })
     ]
 });

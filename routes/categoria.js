@@ -1,12 +1,12 @@
 var validate = require('express-validation');
 var vCategoria = require('./validation/categoria');
-var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var tratamentoErro = require('../componentes/tratamentoErros');
 var sequelize = require('sequelize');
 
 module.exports = app => {
     const Categoria = app.db.models.Categoria;
     const ServicoCategoria = app.services.categoria;
-    const config = app.libs.config;
+    const config = app.configs.config;
 
     app.route('/categoria').all(app.auth.authenticate());
     app.route('/categoria/:id').all(app.auth.authenticate());
@@ -18,13 +18,13 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Exemplo
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiParam (Query Params) {Number[1..25]} limit Número máximo de registros para retorno
      * @apiParam (Query Params) {Number} offset Início da leitura dos registros
      * @apiParam (Query Params) {String[60]} nome Nome completo/parcial para filtro
      * @apiParamExample {text} Exemplo 
-     *      https://api.gerdata.com.br/categoria?limit=25&offset=0&nome=Alimentação
+     *      http://api.gerdata.com/categoria?limit=25&offset=0&nome=Alimentação
      * @apiSuccess {Number} total Total de itens cadastrados
      * @apiSuccess {Number} limit Máximo de itens retornados
      * @apiSuccess {Number} offset Início do cursor para buscar paginadas
@@ -39,14 +39,14 @@ module.exports = app => {
      *          limit: 25,
      *          offset: 0,
      *          data: [{
-     *              'codigo': 1,
-     *              'nome': 'Alimentação',
-     *              'tipo': 0
+     *              codigo: 1,
+     *              nome: 'Alimentação',
+     *              tipo': 0
      *          },
      *          {
-     *              'codigo': 2,
-     *              'nome': 'Salário',
-     *              'tipo': 1
+     *              codigo: 2,
+     *              nome: 'Salário',
+     *              tipo: 1
      *          }]
      *      }
      * @apiErrorExample {json} Erro de consulta
@@ -88,14 +88,14 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiParam {String{60}} nome Nome da categoria [Obrigatório]
      * @apiParam {Number="0 - Despesa", "1 - Receita"} tipo Tipo da Categoria [Obrigatório]
      * @apiParamExample {json} Exemplo
      *      { 
-     *          'nome': 'Transporte',
-     *          'tipo': 0
+     *          nome: 'Transporte',
+     *          tipo: 0
      *      }
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome da categoria
@@ -103,9 +103,9 @@ module.exports = app => {
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 1,
-     *          'nome': 'Transporte',
-     *          'tipo': 0
+     *          codigo: 1,
+     *          nome: 'Transporte',
+     *          tipo: 0
      *      }
      * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
@@ -153,20 +153,20 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiParam {Number} id Código da categoria [Obrigatório]
      * @apiParamExample {text} Exemplo 
-     *      https://api.gerdata.com.br/categoria/2
+     *      http://api.gerdata.com/categoria/2
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome da Categoria
      * @apiSuccess {Number="0 - Despesa", "1 - Receita"} tipo Tipo da categoria
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 1,
-     *          'nome': 'Transporte',
-     *          'tipo': 0
+     *          codigo: 1,
+     *          nome: 'Transporte',
+     *          tipo: 0
      *      }
      * @apiErrorExample {json} Categoria não existe
      *      HTTP/1.1 404 Not Found
@@ -199,17 +199,17 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiParam (Query Params) {Number} id Código da categoria [Obrigatório]
      * @apiParam {String{60}} nome Nome da categoria [Obrigatório]
      * @apiParam {Number="0 - Despesa", "1 - Receita"} tipo Tipo da categoria [Obrigatório]
      * @apiParamExample {text} Url 
-     *      https://api.gerdata.com.br/categoria/2
+     *      http://api.gerdata.com/categoria/2
      * @apiParamExample {json} Corpo da Requisição
      *      {
-     *          'nome': 'Transporte Escolar',
-     *          'tipo': 0
+     *          nome: 'Transporte Escolar',
+     *          tipo: 0
      *      }
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200
@@ -257,7 +257,7 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiParam (Query Params) {Number} id Código da categoria [Obrigatório]
      * @apiSuccessExample {json} Sucesso

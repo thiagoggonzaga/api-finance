@@ -4,14 +4,14 @@ var consign = require('consign');
 const app = express();
 
 consign({ verbose: false })
-	.include('libs/config.js')
+	.include('configs/config.js')
 	.then('db.js')
 	.then('auth.js')
-	.then('libs/middlewares.js')
+	.then('configs/middlewares.js')
 	.then('services')
 	.then('routes')
-	.then('libs/boot.js')
-	.then('libs/language/validator.js')
+	.then('configs/language/validator.js')
+	.then('configs/boot.js')
 	.into(app);
 
 module.exports = app;

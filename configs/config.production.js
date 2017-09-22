@@ -1,15 +1,16 @@
 var logger = require('./logger.js');
 
-const maxReturnRows = 50;
+const maxReturnRows = 25;
 
 module.exports = {
     port: 3000,
-    database: 'finance_dev',
-    username: 'postgres',
-    password: '1234',
+    database: 'finance',
+    username: 'finance_user',
+    password: 'gerdata1234',
     params: {
-        host: 'localhost',
-        dialect: 'postgres',
+        host: 'mysql552.umbler.com',
+        port: '41890',
+        dialect: 'mysql',
         logging: (sql) => {
             logger.info(`[${new Date()}] ${sql}`);
         },
@@ -22,6 +23,7 @@ module.exports = {
             idle: 10000
         },
     },
+    jwtTokenTime: 1440, // 1440 Minutos = 24 Horas
     jwtSecret: '1em9M!5_O59;W1_H{v/be44_7Y3-bd$Y/(A|$H|8vq/kU;+^]Z',
     jwtSession: { session: false },
     query: {

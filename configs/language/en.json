@@ -9,7 +9,10 @@
 		"conta": "Account",
 		"categoria": "Category",
 		"lancamento": "Launch",
-		"usuario": "User"
+        "usuario": "User",
+        "nome": "Name",
+        "tipo": "Type",
+        "codigo": "Code"
 	},
     "usuario": {
         "emailEmUso": "E-mail is already being used."
@@ -20,6 +23,10 @@
     },
     "conta": {
         "contaExistente": "An account with name and type already exists."
+    },
+    "lancamento": {
+        "contaNaoExiste": "Account not found to link to the post.",
+        "categoriaNaoExiste": "Category not found to link to the post."
     },
     "joi": {
         "any": {

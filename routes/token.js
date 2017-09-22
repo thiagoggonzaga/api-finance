@@ -1,10 +1,10 @@
 var jwt = require('jwt-simple');
 var vUsuario = require('./validation/usuario');
 var validate = require('express-validation');
-var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var tratamentoErro = require('../componentes/tratamentoErros');
 
 module.exports = app => {
-    const cfg = app.libs.config;
+    const cfg = app.configs.config;
     const Usuario = app.db.models.Usuario;
 
     /**
@@ -15,24 +15,24 @@ module.exports = app => {
      * @apiParam {String} senha Senha de usuário
      * @apiParamExample {json} Exemplo
      *      {
-     *          'email': 'thiago@gerdata.com.br',
-     *          'senha': '123456'
+     *          email: 'thiago@gerdata.com.br',
+     *          senha: '123456'
      *      }
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome do usuário
      * @apiSuccess {String} email Email do usuário
-     * @apiSuccess {String} dataCadastro Data do cadastro do usuário
+     * @apiSuccess {String} dataCadastro Data do cadastro do usuário (ISO 8601)
      * @apiSuccess {Number="0 - Ativo", "1 - Inativo"} situacao Situação do usuário
      * @apiSuccess {String} token Token do usuário autenticado
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': '1',
-     *          'nome': 'Thiago G. Gonzaga',
-     *          'email': 'thiago@gerdata.com.br',
-     *          'dataCadastro': "2017-09-13T23:42:35.000Z",
-     *          'situacao': 0,
-     *          'token': 'xyz.abc.123.hgf' 
+     *          codigo: '1',
+     *          nome: 'Thiago G. Gonzaga',
+     *          email: 'thiago@gerdata.com.br',
+     *          dataCadastro: "2017-09-13T23:42:35.000Z",
+     *          situacao: 0,
+     *          token: 'xyz.abc.123.hgf' 
      *      }
      * @apiErrorExample {json} Erro de autenticação
      *      HTTP/1.1 401 Unauthorized

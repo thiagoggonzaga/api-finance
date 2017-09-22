@@ -1,12 +1,12 @@
 var validate = require('express-validation');
 var vConta = require('./validation/conta');
-var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var tratamentoErro = require('../componentes/tratamentoErros');
 var sequelize = require('sequelize');
 
 module.exports = app => {
     const Conta = app.db.models.Conta;
     const ServicoConta = app.services.conta;
-    const config = app.libs.config;
+    const config = app.configs.config;
 
     app.route('/conta').all(app.auth.authenticate());
     app.route('/conta/:id').all(app.auth.authenticate());
@@ -18,14 +18,14 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Exemplo
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf'
      *      }
      * @apiParam (Query Params) {Number[1..25]} limit Número máximo de registros para retorno
      * @apiParam (Query Params) {Number} offset Início da leitura dos registros
      * @apiParam (Query Params) {String[60]} nome Nome completo/parcial para filtro
      * @apiParam (Query Params) {Number="0 - Ativo", "1 - Inativo"} situacao=0 Situação da conta
      * @apiParamExample {text} Exemplo 
-     *      https://api.gerdata.com.br/conta?limit=25&offset=0&nome=Alimentação&situacao=0
+     *      http://api.gerdata.com/conta?limit=25&offset=0&nome=Alimentação&situacao=0
      * @apiSuccess {Number} total Total de itens cadastrados
      * @apiSuccess {Number} limit Máximo de itens retornados
      * @apiSuccess {Number} offset Início do cursor para buscar paginadas
@@ -41,16 +41,16 @@ module.exports = app => {
      *          limit: 25,
      *          offset: 0,
      *          data: [{
-     *              'codigo': 1,
-     *              'nome': 'Banco do Brasil',
-     *              'tipo': 0,
-     *              'situacao': 0
+     *              codigo: 1,
+     *              nome: 'Banco do Brasil',
+     *              tipo: 0,
+     *              situacao: 0
      *          },
      *          {
-     *              'codigo': 2,
-     *              'nome': 'Nubank',
-     *              'tipo': 2,
-     *              'situacao': 0
+     *              codigo: 2,
+     *              nome: 'Nubank',
+     *              tipo: 2,
+     *              situacao: 0
      *          }]
      *      }
      * @apiErrorExample {json} Erro de consulta
@@ -93,14 +93,14 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf'
      *      }
      * @apiParam {String{150}} nome Nome da conta [Obrigatório]
      * @apiParam {Number="0 - Conta Corrente", "1 - Conta Poupança", "2 - Cartão de Crédito"} tipo Tipo da Conta [Obrigatório]
      * @apiParamExample {json} Exemplo
      *      { 
-     *          'nome': 'Banco do Brasil',
-     *          'tipo': 0
+     *          nome: 'Banco do Brasil',
+     *          tipo: 0
      *      }
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome da conta
@@ -109,10 +109,10 @@ module.exports = app => {
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 1,
-     *          'nome': 'Banco do Brasil',
-     *          'tipo': 0,
-     *          'situacao': 0
+     *          codigo: 1,
+     *          nome: 'Banco do Brasil',
+     *          tipo: 0,
+     *          situacao: 0
      *      }
      * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
@@ -158,11 +158,11 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf'
      *      }
      * @apiParam {Number} id Código da conta [Obrigatório]
      * @apiParamExample {text} Exemplo 
-     *      https://api.gerdata.com.br/conta/2
+     *      http://api.gerdata.com/conta/2
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome da conta
      * @apiSuccess {Number="0 - Conta Corrente", "1 - Conta Poupança", "2 - Cartão de Crédito"} tipo Tipo da conta
@@ -170,10 +170,10 @@ module.exports = app => {
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 2,
-     *          'nome': 'Nubank',
-     *          'tipo': 2,
-     *          'situacao': 0
+     *          codigo: 2,
+     *          nome: 'Nubank',
+     *          tipo: 2,
+     *          situacao: 0
      *      }
      * @apiErrorExample {json} Conta não existe
      *      HTTP/1.1 404 Not Found
@@ -206,19 +206,19 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf'
      *      }
      * @apiParam (Query Params) {Number} id Código da conta [Obrigatório]
      * @apiParam {String{150}} nome Nome da conta [Obrigatório]
      * @apiParam {Number="0 - Conta Corrente", "1 - Conta Poupança", "2 - Cartão de Crédito"} tipo Tipo da Conta [Obrigatório]
      * @apiParam {Number="0 - Ativo", "1 - Inativo"} situacao=0 Situação da conta
      * @apiParamExample {text} Url 
-     *      https://api.gerdata.com.br/conta/2
+     *      http://api.gerdata.com/conta/2
      * @apiParamExample {json} Corpo da Requisição
      *      {
-     *          'nome': 'Nubank 2',
-     *          'tipo': 2,
-     *          'situacao': 0
+     *          nome: 'Nubank 2',
+     *          tipo: 2,
+     *          situacao: 0
      *      }
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200
@@ -265,7 +265,7 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf'
      *      }
      * @apiParam (Query Params) {Number} id Código da conta [Obrigatório]
      * @apiSuccessExample {json} Sucesso

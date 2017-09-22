@@ -4,7 +4,8 @@ module.exports = (sequelize, DataType) => {
 			type: DataType.BIGINT,
 			primaryKey: true,
 			autoIncrement: true,
-			field: 'codigo'
+			field: 'codigo',
+			allowNull: false
 		},
 		nome: {
 			type: DataType.STRING(60),
@@ -28,8 +29,8 @@ module.exports = (sequelize, DataType) => {
 			updatedAt: false,
 			underscored: true,
 			indexes: [{
-				name: 'idx_categoria_nome_tipo_unico',
 				unique: true,
+				name: 'idx_categoria_nome_tipo_unico',
 				fields: ['nome', 'tipo', 'cod_usuario']
 			}]
 		});

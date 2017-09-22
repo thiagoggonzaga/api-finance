@@ -9,7 +9,10 @@
         "conta": "Conta",
         "categoria": "Categoria",
         "lancamento": "Lançamento",
-        "usuario": "Usuário"
+        "usuario": "Usuário",
+        "nome": "Nome",
+        "tipo": "Tipo",
+        "codigo": "Código"
     },
     "usuario": {
         "emailEmUso": "E-mail já está sendo utilizado."
@@ -20,6 +23,10 @@
     },
     "conta": {
         "contaExistente": "Já existe uma conta com o nome e tipo informado."
+    },
+    "lancamento": {
+        "contaNaoExiste": "Conta não encontrada para inclusão do lançamento.",
+        "categoriaNaoExiste": "Categoria não encontrada para vínculo com o lançamento."
     },
     "joi": {
         "any": {

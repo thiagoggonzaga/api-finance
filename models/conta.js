@@ -4,7 +4,8 @@ module.exports = (sequelize, DataType) => {
             type: DataType.BIGINT,
             primaryKey: true,
             autoIncrement: true,
-            field: 'codigo'
+            field: 'codigo',
+            allowNull: false
         },
         nome: {
             type: DataType.STRING(150),
@@ -30,9 +31,7 @@ module.exports = (sequelize, DataType) => {
             timestamps: false,
             createdAt: false,
             updatedAt: false,
-            underscored: true,
-            hooks: {
-            }
+            underscored: true
         });
 
     Conta.associate = function (models) {

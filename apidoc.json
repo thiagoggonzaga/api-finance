@@ -1,0 +1,21 @@
+{
+    "name": "Finance API",
+    "version": "1.0.0",
+    "description": "API responsável por executar controle de contas de forma básica e produtiva.",
+    "apidoc": {
+        "title": "Finance API",
+        "url": "http://api.gerdata.com/apidoc"
+    },
+    "footer": {
+        "title": "Sobre",
+        "filename": "/public/Footer.md"
+    },
+    "order": [
+        "Status",
+        "Credencial",
+        "Usuario",
+        "Categoria",
+        "Conta",
+        "Lancamento"
+    ]
+}

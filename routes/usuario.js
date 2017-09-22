@@ -1,6 +1,6 @@
 var validate = require('express-validation');
 var vUsuario = require('./validation/usuario');
-var tratamentoErro = require('../libs/componentes/tratamentoErros');
+var tratamentoErro = require('../componentes/tratamentoErros');
 
 module.exports = app => {
     const Usuario = app.db.models.Usuario;
@@ -13,7 +13,7 @@ module.exports = app => {
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome do usuário
@@ -23,11 +23,11 @@ module.exports = app => {
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 1,
-     *          'nome': 'Thiago G. Gonzaga',
-     *          'email': 'thiago@gerdata.com.br',
-     *          'dataCadastro': "2017-09-13T23:42:35.000Z",
-     *          'situacao': 0
+     *          codigo: 1,
+     *          nome: 'Thiago G. Gonzaga',
+     *          email: 'thiago@gerdata.com.br',
+     *          dataCadastro: "2017-09-13T23:42:35.000Z",
+     *          situacao: 0
      *      }
      * @apiErrorExample {json} Erro de consulta
      *      HTTP/1.1 412 Precondition Failed
@@ -53,9 +53,9 @@ module.exports = app => {
      * @apiParam {String} senha Senha para acesso a api
      * @apiParamExample {json} Exemplo
      *      {
-     *          'nome': 'Thiago G. Gonzaga',
-     *          'email': 'thiago@gerdata.com.br',
-     *          'senha': '123456'
+     *          nome: 'Thiago G. Gonzaga',
+     *          email: 'thiago@gerdata.com.br',
+     *          senha: '123456'
      *      }
      * @apiSuccess {Number} codigo Código de registro
      * @apiSuccess {String} nome Nome do usuário
@@ -65,11 +65,11 @@ module.exports = app => {
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 1,
-     *          'nome': 'Thiago G. Gonzaga',
-     *          'email': 'thiago@gerdata.com.br',
-     *          'dataCadastro': "2017-09-13T23:42:35.000Z",
-     *          'situacao': 0
+     *          codigo: 1,
+     *          nome: 'Thiago G. Gonzaga',
+     *          email: 'thiago@gerdata.com.br',
+     *          dataCadastro: "2017-09-13T23:42:35.000Z",
+     *          situacao: 0
      *      }
      * @apiErrorExample {json} Erro no cadastro
      *      HTTP/1.1 412 Precondition Failed

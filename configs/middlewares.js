@@ -7,10 +7,11 @@ var compression = require('compression');
 var helmet = require('helmet');
 var logger = require('./logger.js');
 var i18n = require("i18n");
+var JoiTranslation = require('joi-i18n');
 var Joi = require('joi');
 
 module.exports = app => {
-    app.set("port", app.libs.config.port);
+    app.set("port", app.configs.config.port);
     app.set("json spaces", 4);
     app.use(morgan('common', {
         stream: {
