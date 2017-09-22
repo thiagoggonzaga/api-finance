@@ -57,8 +57,8 @@ module.exports = app => {
      *              codigo: 1,
      *              descricao: 'Combustível',
      *              valor: 120,15,
-     *              data_emissao: '',
-     *              data_vencimento: '',
+     *              data_emissao: '2017-09-02',
+     *              data_vencimento: '2017-09-10',
      *              tipo: 0,
      *              conta: {
      *                  codigo: 1,
@@ -73,8 +73,8 @@ module.exports = app => {
      *              codigo: 2,
      *              descricao: 'Salário',
      *              valor: 2300,
-     *              data_emissao: '',
-     *              data_vencimento: '',
+     *              data_emissao: '2017-09-02',
+     *              data_vencimento: '2017-09-10',
      *              tipo: 1,
      *              conta: {
      *                  codigo: 1,
@@ -94,7 +94,7 @@ module.exports = app => {
     app.get("/lancamento", validate(vLancamento.get), (req, res) => {
         let limit = config.query.getLimit(req.query.limit);
         let offset = req.query.offset || config.query.offset;
-        
+
         let whereConta = {
             cod_usuario: req.user.codigo
         };
@@ -255,30 +255,51 @@ module.exports = app => {
     });
 
     /**
-     * @api {get} /lancamento/:id Obter lancamento
+     * @api {get} /lancamento/:id Obter lançamento
      * @apiVersion 1.0.0
      * @apiGroup Lancamento
+     * @apiDescription Obtém os dados de um lançamento utilizando o código de registro
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
-     * @apiParam {Number} id Código da lancamento [Obrigatório]
+     * @apiParam {Number} id Código da lançamento [Obrigatório]
      * @apiParamExample {text} Exemplo 
      *      http://api.gerdata.com/lancamento/2
-     * @apiSuccess {Number} codigo Código de registro
-     * @apiSuccess {String} nome Nome da lancamento
-     * @apiSuccess {Number="0 - Lancamento Corrente", "1 - Lancamento Poupança", "2 - Cartão de Crédito"} tipo Tipo da lancamento
-     * @apiSuccess {Number="0 - Ativo", "1 - Inativo"} situacao Situação da lancamento
+     * @apiSuccess {Number} codigo Código da Lançamento
+     * @apiSuccess {String} descricao Descrição do Lançamento
+     * @apiSuccess {Number="0 - Despesa", "1 - Receita"} tipo Tipo do Lançamento
+     * @apiSuccess {String} valor Valor do Lançamento
+     * @apiSuccess {String} data_emissao Data de emissão do documento referente ao lançamento (ISO 8601)
+     * @apiSuccess {String} data_vencimento Data de vencimento do Lançamento (ISO 8601)
+     * @apiSuccess {Object} conta Conta vinculada ao lançamento
+     * @apiSuccess {Number} conta.codigo Código da conta onde o lançamento está vinculado
+     * @apiSuccess {String} conta.nome Nome da conta onde o lançamento está vinculado
+     * @apiSuccess {Object} categoria Categoria vinculada ao lançamento
+     * @apiSuccess {Number} categoria.codigo Código da categoria vinculada ao Lançamento
+     * @apiSuccess {String} categoria.nome Nome da categoria vinculada ao Lançamento
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200 OK
      *      {
-     *          'codigo': 2,
-     *          'nome': 'Nubank',
-     *          'tipo': 2,
-     *          'situacao': 0
+     *          {
+     *              codigo: 1,
+     *              descricao: 'Combustível',
+     *              valor: 120,15,
+     *              data_emissao: '2017-09-02',
+     *              data_vencimento: '2017-09-10',
+     *              tipo: 0,
+     *              conta: {
+     *                  codigo: 1,
+     *                  nome: 'Conta Corrente'
+     *              },
+     *              categoria: {
+     *                  codigo: 1,
+     *                  nome: 'Automóvel'
+     *              }
+     *          }
      *      }
-     * @apiErrorExample {json} Lancamento não existe
+     * @apiErrorExample {json} Lançamento não existe
      *      HTTP/1.1 404 Not Found
      * @apiErrorExample {json} Erro de consulta
      *      HTTP/1.1 412 Precondition Failed
@@ -287,7 +308,24 @@ module.exports = app => {
      */
     app.get('/lancamento/:id', validate(vLancamento.delete), (req, res) => {
         Lancamento.findOne({
-            attributes: ['codigo', 'nome', 'tipo', 'situacao'],
+            attributes: ['codigo', 'descricao', 'valor', 'tipo', 'data_emissao', 'data_vencimento'],
+            include: [{
+                attributes: ['codigo', 'nome'],
+                model: Categoria,
+                as: 'categoria',
+                required: true,
+                where: {
+                    cod_usuario: req.user.codigo
+                }
+            }, {
+                attributes: ['codigo', 'nome'],
+                model: Conta,
+                as: 'conta',
+                required: true,
+                where: {
+                    cod_usuario: req.user.codigo
+                }
+            }],
             where: {
                 codigo: req.params.id,
                 cod_usuario: req.user.codigo
@@ -303,31 +341,38 @@ module.exports = app => {
     });
 
     /**
-     * @api {put} /lancamento/:id Atualiza uma Lancamento
+     * @api {put} /lancamento/:id Atualiza um Lançamento
      * @apiVersion 1.0.0
      * @apiGroup Lancamento
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
-     * @apiParam (Query Params) {Number} id Código da lancamento [Obrigatório]
-     * @apiParam {String{150}} nome Nome da lancamento [Obrigatório]
-     * @apiParam {Number="0 - Lancamento Corrente", "1 - Lancamento Poupança", "2 - Cartão de Crédito"} tipo Tipo da Lancamento [Obrigatório]
-     * @apiParam {Number="0 - Ativo", "1 - Inativo"} situacao=0 Situação da lancamento
+     * @apiParam {String{150}} descricao Descrição do lançamento [Obrigatório]
+     * @apiParam {Number="0 - Despesa", "1 - Receita"} tipo=0 Tipo do Lançamento [Obrigatório]
+     * @apiParam {Number} valor Valor do lançamento [Obrigatório]
+     * @apiParam {Number} data_emissao Data de emissão do documento utilizando o formato ISO 8601 (Javascript)
+     * @apiParam {Number} data_vencimento Data de vencimento do documento no formato ISO 8601 [Obrigatório]
+     * @apiParam {Number} cod_conta Código da conta para adição do lançamento [Obrigatório]
+     * @apiParam {Number} cod_categoria Código da categoria relacionada ao lançamento [Obrigatório]
      * @apiParamExample {text} Url 
      *      http://api.gerdata.com/lancamento/2
-     * @apiParamExample {json} Corpo da Requisição
-     *      {
-     *          'nome': 'Nubank 2',
-     *          'tipo': 2,
-     *          'situacao': 0
+      * @apiParamExample {json} Exemplo
+     *      { 
+     *          descricao: 'Restaurante - Almoço',
+     *          tipo: 0,
+     *          valor: 13.50,
+     *          data_emissao: '2017-05-26',
+     *          data_vencimento: '2017-06-10',
+     *          cod_conta: 1,
+     *          cod_categoria: 1
      *      }
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200
      *      {
      *          sucesso: true,
-     *          mensagem: 'Lancamento atualizada com sucesso'
+     *          mensagem: 'Lançamento atualizado com sucesso'
      *      }
      * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
@@ -335,9 +380,35 @@ module.exports = app => {
      *          sucesso: false,
      *          erros: [
      *              {
-     *                  campo: 'nome',
+     *                  campo: 'descricao',
      *                  mensagens: [
-     *                      'O campo "Nome" deve ser informado'
+     *                      'O campo "descricao" deve ser informado'
+     *                  ]
+     *              }
+     *          ]
+     *      }
+     * @apiErrorExample {json} Categoria Inválida
+     *      HTTP/1.1 412
+     *      {
+     *          sucesso: false,
+     *          erros: [
+     *              {
+     *                  campo: 'cod_categoria',
+     *                  mensagens: [
+     *                      'Categoria não encontrada para vínculo com o lançamento.'
+     *                  ]
+     *              }
+     *          ]
+     *      }
+     * @apiErrorExample {json} Conta Inválida
+     *      HTTP/1.1 412
+     *      {
+     *          sucesso: false,
+     *          erros: [
+     *              {
+     *                  campo: 'cod_conta',
+     *                  mensagens: [
+     *                      'Conta não encontrada para inclusão do lançamento.'
      *                  ]
      *              }
      *          ]
@@ -346,36 +417,50 @@ module.exports = app => {
      *      HTTP/1.1 401 Unauthorized
      */
     app.put('/lancamento/:id', validate(vLancamento.post), (req, res) => {
-        Lancamento.update(req.body, {
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
+        // Seta o ID do usuário logado para criação da lancamento
+        req.body.cod_usuario = req.user.codigo;
+        
+        // Seta os objetos de data corretamente para inclusão pelo Sequelize
+        req.body.dataVencimento = req.body.data_vencimento;
+        req.body.dataEmissao = req.body.data_emissao;
+
+        ServicoLancamento.dadosAssociadosEstaoValidos(req.body).then((validacao) => {
+
+            if (validacao.sucesso) {
+                Lancamento.update(req.body, {
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(function (result) {
+                    res.json({
+                        sucesso: true,
+                        mensagem: __mf('mensagem.atualizacao', t('label').lancamento)
+                    });
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.status(412).json(validacao);
             }
-        }).then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.atualizacao', t('label').lancamento)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
         });
     });
 
     /**
-     * @api {delete} /lancamento/:id Exclui uma lancamento
+     * @api {delete} /lancamento/:id Exclui um lançamento
      * @apiVersion 1.0.0
      * @apiGroup Lancamento
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
-     *          'Authorization': 'JWT xyz.abc.123.hgf' 
+     *          Authorization: 'JWT xyz.abc.123.hgf' 
      *      }
-     * @apiParam (Query Params) {Number} id Código da lancamento [Obrigatório]
+     * @apiParam (Query Params) {Number} id Código da lançamento [Obrigatório]
      * @apiSuccessExample {json} Sucesso
      *      HTTP/1.1 200
      *      {
      *          sucesso: true,
-     *          mensagem: 'Lancamento removida com sucesso'
+     *          mensagem: 'Lançamento removido com sucesso'
      *      }
      * @apiErrorExample {json} Erro de consulta
      *      HTTP/1.1 412 Precondition Failed

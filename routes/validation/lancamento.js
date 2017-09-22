@@ -12,7 +12,7 @@ module.exports.post = {
         data_vencimento: Joi.string().min(10).max(10).regex(/^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/).required()
     },
     params: {
-        id: Joi.number().integer()
+        id: Joi.number().integer().min(1)
     }
 };
 
@@ -30,6 +30,6 @@ module.exports.get = {
 
 module.exports.delete = {
     params: {
-        id: Joi.number().integer()
+        id: Joi.number().integer().min(1)
     }
 };

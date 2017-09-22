@@ -25,8 +25,10 @@
         "contaExistente": "Já existe uma conta com o nome e tipo informado."
     },
     "lancamento": {
-        "contaNaoExiste": "Conta não encontrada para inclusão do lançamento.",
-        "categoriaNaoExiste": "Categoria não encontrada para vínculo com o lançamento."
+        "contaNaoExiste": "Conta não encontrada para vínculo do lançamento.",
+        "categoriaNaoExiste": "Categoria não encontrada para vínculo com o lançamento.",
+        "dataEmissaoSuperiorDataVencimento": "Data de emissão deve ser menor ou igual a data de vencimento.",
+        "dataVencimentoInferiorDataEmissao": "Data de vencimento deve ser maior ou igual a data de emissão."
     },
     "joi": {
         "any": {

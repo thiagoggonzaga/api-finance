@@ -1,4 +1,5 @@
 var sequelize = require('sequelize');
+var moment = require('moment');
 
 module.exports = app => {
     const Lancamento = app.db.models.Lancamento;
@@ -8,6 +9,23 @@ module.exports = app => {
     return {
         dadosAssociadosEstaoValidos: (entidade) => {
 
+            // Data de emissão deve ser menor que a data de vencimento do documento
+            if (entidade.dataVencimento && entidade.dataEmissao && moment(entidade.dataVencimento) < moment(entidade.dataEmissao)) {
+                return new Promise((resolve, reject) => {
+                    resolve({
+                        sucesso: false,
+                        erros: [{
+                            campo: 'data_emissao',
+                            mensagens: [t('lancamento').dataEmissaoSuperiorDataVencimento]
+                        }, {
+                            campo: 'data_vencimento',
+                            mensagens: [t('lancamento').dataVencimentoInferiorDataEmissao]
+                        }]
+                    });
+                });
+            }
+
+            // Verifica se a conta e a categoria existem
             return Conta.count({
                 where: {
                     codigo: entidade.cod_conta,

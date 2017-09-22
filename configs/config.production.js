@@ -9,7 +9,6 @@ module.exports = {
     password: 'gerdata1234',
     params: {
         host: 'mysql552.umbler.com',
-        port: '41890',
         dialect: 'mysql',
         logging: (sql) => {
             logger.info(`[${new Date()}] ${sql}`);

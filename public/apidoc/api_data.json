@@ -1229,7 +1229,7 @@
   {
     "type": "delete",
     "url": "/lancamento/:id",
-    "title": "Exclui uma lancamento",
+    "title": "Exclui um lançamento",
     "version": "1.0.0",
     "group": "Lancamento",
     "header": {
@@ -1247,7 +1247,7 @@
       "examples": [
         {
           "title": "Header",
-          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "content": "{ \n    Authorization: 'JWT xyz.abc.123.hgf' \n}",
           "type": "json"
         }
       ]
@@ -1260,7 +1260,7 @@
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Código da lancamento [Obrigatório]</p>"
+            "description": "<p>Código da lançamento [Obrigatório]</p>"
           }
         ]
       }
@@ -1269,7 +1269,7 @@
       "examples": [
         {
           "title": "Sucesso",
-          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Lancamento removida com sucesso'\n}",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Lançamento removido com sucesso'\n}",
           "type": "json"
         }
       ]
@@ -1503,7 +1503,7 @@
       "examples": [
         {
           "title": "Sucesso",
-          "content": "HTTP/1.1 200 OK\n{\n    total: 2, \n    limit: 25,\n    offset: 0,\n    data: [{\n        codigo: 1,\n        descricao: 'Combustível',\n        valor: 120,15,\n        data_emissao: '',\n        data_vencimento: '',\n        tipo: 0,\n        conta: {\n            codigo: 1,\n            nome: 'Conta Corrente'\n        },\n        categoria: {\n            codigo: 1,\n            nome: 'Automóvel'\n        }\n    },\n    {\n        codigo: 2,\n        descricao: 'Salário',\n        valor: 2300,\n        data_emissao: '',\n        data_vencimento: '',\n        tipo: 1,\n        conta: {\n            codigo: 1,\n            nome: 'Conta Corrente'\n        },\n        'categoria: {\n            codigo: 5,\n            nome: 'Salário'\n        }\n    }]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    total: 2, \n    limit: 25,\n    offset: 0,\n    data: [{\n        codigo: 1,\n        descricao: 'Combustível',\n        valor: 120,15,\n        data_emissao: '2017-09-02',\n        data_vencimento: '2017-09-10',\n        tipo: 0,\n        conta: {\n            codigo: 1,\n            nome: 'Conta Corrente'\n        },\n        categoria: {\n            codigo: 1,\n            nome: 'Automóvel'\n        }\n    },\n    {\n        codigo: 2,\n        descricao: 'Salário',\n        valor: 2300,\n        data_emissao: '2017-09-02',\n        data_vencimento: '2017-09-10',\n        tipo: 1,\n        conta: {\n            codigo: 1,\n            nome: 'Conta Corrente'\n        },\n        'categoria: {\n            codigo: 5,\n            nome: 'Salário'\n        }\n    }]\n}",
           "type": "json"
         }
       ]
@@ -1529,9 +1529,10 @@
   {
     "type": "get",
     "url": "/lancamento/:id",
-    "title": "Obter lancamento",
+    "title": "Obter lançamento",
     "version": "1.0.0",
     "group": "Lancamento",
+    "description": "<p>Obtém os dados de um lançamento utilizando o código de registro</p>",
     "header": {
       "fields": {
         "Header": [
@@ -1547,7 +1548,7 @@
       "examples": [
         {
           "title": "Header",
-          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "content": "{ \n    Authorization: 'JWT xyz.abc.123.hgf' \n}",
           "type": "json"
         }
       ]
@@ -1560,7 +1561,7 @@
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Código da lancamento [Obrigatório]</p>"
+            "description": "<p>Código da lançamento [Obrigatório]</p>"
           }
         ]
       },
@@ -1580,44 +1581,95 @@
             "type": "Number",
             "optional": false,
             "field": "codigo",
-            "description": "<p>Código de registro</p>"
+            "description": "<p>Código da Lançamento</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "nome",
-            "description": "<p>Nome da lancamento</p>"
+            "field": "descricao",
+            "description": "<p>Descrição do Lançamento</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "allowedValues": [
-              "\"0 - Lancamento Corrente\"",
-              "\"1 - Lancamento Poupança\"",
-              "\"2 - Cartão de Crédito\""
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
             ],
             "optional": false,
             "field": "tipo",
-            "description": "<p>Tipo da lancamento</p>"
+            "description": "<p>Tipo do Lançamento</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "valor",
+            "description": "<p>Valor do Lançamento</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data_emissao",
+            "description": "<p>Data de emissão do documento referente ao lançamento (ISO 8601)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data_vencimento",
+            "description": "<p>Data de vencimento do Lançamento (ISO 8601)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "conta",
+            "description": "<p>Conta vinculada ao lançamento</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
-            "allowedValues": [
-              "\"0 - Ativo\"",
-              "\"1 - Inativo\""
-            ],
             "optional": false,
-            "field": "situacao",
-            "description": "<p>Situação da lancamento</p>"
+            "field": "conta.codigo",
+            "description": "<p>Código da conta onde o lançamento está vinculado</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "conta.nome",
+            "description": "<p>Nome da conta onde o lançamento está vinculado</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "categoria",
+            "description": "<p>Categoria vinculada ao lançamento</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "categoria.codigo",
+            "description": "<p>Código da categoria vinculada ao Lançamento</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "categoria.nome",
+            "description": "<p>Nome da categoria vinculada ao Lançamento</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Sucesso",
-          "content": "HTTP/1.1 200 OK\n{\n    'codigo': 2,\n    'nome': 'Nubank',\n    'tipo': 2,\n    'situacao': 0\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    {\n        codigo: 1,\n        descricao: 'Combustível',\n        valor: 120,15,\n        data_emissao: '2017-09-02',\n        data_vencimento: '2017-09-10',\n        tipo: 0,\n        conta: {\n            codigo: 1,\n            nome: 'Conta Corrente'\n        },\n        categoria: {\n            codigo: 1,\n            nome: 'Automóvel'\n        }\n    }\n}",
           "type": "json"
         }
       ]
@@ -1625,7 +1677,7 @@
     "error": {
       "examples": [
         {
-          "title": "Lancamento não existe",
+          "title": "Lançamento não existe",
           "content": "HTTP/1.1 404 Not Found",
           "type": "json"
         },
@@ -1791,7 +1843,7 @@
   {
     "type": "put",
     "url": "/lancamento/:id",
-    "title": "Atualiza uma Lancamento",
+    "title": "Atualiza um Lançamento",
     "version": "1.0.0",
     "group": "Lancamento",
     "header": {
@@ -1809,54 +1861,68 @@
       "examples": [
         {
           "title": "Header",
-          "content": "{ \n    'Authorization': 'JWT xyz.abc.123.hgf' \n}",
+          "content": "{ \n    Authorization: 'JWT xyz.abc.123.hgf' \n}",
           "type": "json"
         }
       ]
     },
     "parameter": {
       "fields": {
-        "Query Params": [
-          {
-            "group": "Query Params",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Código da lancamento [Obrigatório]</p>"
-          }
-        ],
         "Parameter": [
           {
             "group": "Parameter",
             "type": "String",
             "size": "150",
             "optional": false,
-            "field": "nome",
-            "description": "<p>Nome da lancamento [Obrigatório]</p>"
+            "field": "descricao",
+            "description": "<p>Descrição do lançamento [Obrigatório]</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "allowedValues": [
-              "\"0 - Lancamento Corrente\"",
-              "\"1 - Lancamento Poupança\"",
-              "\"2 - Cartão de Crédito\""
+              "\"0 - Despesa\"",
+              "\"1 - Receita\""
             ],
             "optional": false,
             "field": "tipo",
-            "description": "<p>Tipo da Lancamento [Obrigatório]</p>"
+            "defaultValue": "0",
+            "description": "<p>Tipo do Lançamento [Obrigatório]</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
-            "allowedValues": [
-              "\"0 - Ativo\"",
-              "\"1 - Inativo\""
-            ],
             "optional": false,
-            "field": "situacao",
-            "defaultValue": "0",
-            "description": "<p>Situação da lancamento</p>"
+            "field": "valor",
+            "description": "<p>Valor do lançamento [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "data_emissao",
+            "description": "<p>Data de emissão do documento utilizando o formato ISO 8601 (Javascript)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "data_vencimento",
+            "description": "<p>Data de vencimento do documento no formato ISO 8601 [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "cod_conta",
+            "description": "<p>Código da conta para adição do lançamento [Obrigatório]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "cod_categoria",
+            "description": "<p>Código da categoria relacionada ao lançamento [Obrigatório]</p>"
           }
         ]
       },
@@ -1867,8 +1933,8 @@
           "type": "text"
         },
         {
-          "title": "Corpo da Requisição",
-          "content": "{\n    'nome': 'Nubank 2',\n    'tipo': 2,\n    'situacao': 0\n}",
+          "title": "Exemplo",
+          "content": "{ \n    descricao: 'Restaurante - Almoço',\n    tipo: 0,\n    valor: 13.50,\n    data_emissao: '2017-05-26',\n    data_vencimento: '2017-06-10',\n    cod_conta: 1,\n    cod_categoria: 1\n}",
           "type": "json"
         }
       ]
@@ -1877,7 +1943,7 @@
       "examples": [
         {
           "title": "Sucesso",
-          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Lancamento atualizada com sucesso'\n}",
+          "content": "HTTP/1.1 200\n{\n    sucesso: true,\n    mensagem: 'Lançamento atualizado com sucesso'\n}",
           "type": "json"
         }
       ]
@@ -1886,7 +1952,17 @@
       "examples": [
         {
           "title": "Pré-requisitos não preenchidos",
-          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'nome',\n            mensagens: [\n                'O campo \"Nome\" deve ser informado'\n            ]\n        }\n    ]\n}",
+          "content": "HTTP/1.1 412 Precondition Failed\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'descricao',\n            mensagens: [\n                'O campo \"descricao\" deve ser informado'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Categoria Inválida",
+          "content": "HTTP/1.1 412\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'cod_categoria',\n            mensagens: [\n                'Categoria não encontrada para vínculo com o lançamento.'\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Conta Inválida",
+          "content": "HTTP/1.1 412\n{\n    sucesso: false,\n    erros: [\n        {\n            campo: 'cod_conta',\n            mensagens: [\n                'Conta não encontrada para inclusão do lançamento.'\n            ]\n        }\n    ]\n}",
           "type": "json"
         },
         {
