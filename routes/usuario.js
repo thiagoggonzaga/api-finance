@@ -3,8 +3,6 @@ var vUsuario = require('./validation/usuario');
 var tratamentoErro = require('../componentes/tratamentoErros');
 
 module.exports = app => {
-    const Usuario = app.db.models.Usuario;
-    const ServicoUsuario = app.services.usuario;
 
     /**
      * @api {get} /usuario Exibe usuário autenticado
@@ -34,15 +32,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.get('/usuario', app.auth.authenticate(), (req, res) => {
-        Usuario.findById(req.user.codigo, {
-            attributes: ["codigo", "nome", "email", "dataCadastro", "situacao"]
-        }).then(result => {
-            res.json(result)
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.get('/usuario', app.auth.authenticate(), app.controllers.usuario.obterUsuarioLogado);
 
     /**
      * @api {post} /usuario Cadastra novo usuário
@@ -80,28 +70,7 @@ module.exports = app => {
      *          mensagem: 'E-mail já está sendo utilizado.'
      *      }
      */
-    app.post("/usuario", validate(vUsuario.post), (req, res) => {
-        ServicoUsuario.verifiqueEmailExistente(req.body.email).then((emailJaCadastrado) => {
-
-            if (!emailJaCadastrado) {
-                Usuario.create(req.body).then(result => {
-                    // Remove a senha criptografada por motivos de segurança
-                    delete result.dataValues.senha;
-                    res.json(result);
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
-                });
-            } else {
-                res.status(412).json({
-                    sucesso: false,
-                    mensagem: t('usuario').emailEmUso
-                });
-            }
-
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.post("/usuario", validate(vUsuario.post), app.controllers.usuario.novoUsuario);
 
     // Interceptador para retorno das chamadas que possuem erros gerados pelo express-validation
     app.use(tratamentoErro.verifiqueErrosDeValidacao);

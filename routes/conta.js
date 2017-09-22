@@ -1,13 +1,10 @@
 var validate = require('express-validation');
 var vConta = require('./validation/conta');
 var tratamentoErro = require('../componentes/tratamentoErros');
-var sequelize = require('sequelize');
 
 module.exports = app => {
-    const Conta = app.db.models.Conta;
-    const ServicoConta = app.services.conta;
-    const config = app.configs.config;
 
+    // Rotas c/ Autorização
     app.route('/conta').all(app.auth.authenticate());
     app.route('/conta/:id').all(app.auth.authenticate());
 
@@ -58,33 +55,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.get("/conta", validate(vConta.get), (req, res) => {
-        let limit = config.query.getLimit(req.query.limit);
-        let offset = req.query.offset || config.query.offset;
-
-        Conta.findAndCountAll({
-            attributes: ['codigo', 'nome', 'tipo', 'situacao'],
-            where: {
-                nome: sequelize.where(sequelize.fn('lower', sequelize.col('nome')), {
-                    $like: sequelize.fn('lower', '%' + (req.query.nome || '') + '%')
-                }),
-                cod_usuario: req.user.codigo,
-                situacao: req.query.situacao
-            },
-            order: ['tipo', 'nome'],
-            limit: limit,
-            offset: offset
-        }).then(result => {
-            res.json({
-                total: result.count,
-                limit: limit,
-                offset: offset,
-                data: result.rows
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.get("/conta", validate(vConta.get), app.controllers.conta.listarContas);
 
     /**
      * @api {post} /conta Cadastro de Contas
@@ -130,26 +101,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.post('/conta', validate(vConta.post), function (req, res) {
-        // Seta o ID do usuário logado para criação da conta
-        req.body.cod_usuario = req.user.codigo;
-
-        ServicoConta.existeContaComMesmoNomeEhTipo(req.body).then(contaExistente => {
-
-            if (!contaExistente) {
-                Conta.create(req.body).then(result => {
-                    res.json(result)
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
-                });
-            } else {
-                res.status(412).json({
-                    sucesso: false,
-                    mensagem: t('conta').contaExistente
-                });
-            }
-        });
-    });
+    app.post('/conta', validate(vConta.post), app.controllers.conta.cadastrarConta);
 
     /**
      * @api {get} /conta/:id Obter conta
@@ -182,22 +134,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.get('/conta/:id', validate(vConta.delete), (req, res) => {
-        Conta.findOne({
-            attributes: ['codigo', 'nome', 'tipo', 'situacao'],
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
-            }
-        }).then(result => {
-            if (result) {
-                return res.json(result);
-            }
-            return res.sendStatus(404);
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.get('/conta/:id', validate(vConta.delete), app.controllers.conta.obterConta);
 
     /**
      * @api {put} /conta/:id Atualiza uma Conta
@@ -242,21 +179,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.put('/conta/:id', validate(vConta.post), (req, res) => {
-        Conta.update(req.body, {
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
-            }
-        }).then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.atualizacao', t('label').conta)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.put('/conta/:id', validate(vConta.post), app.controllers.conta.atualizarConta);
 
     /**
      * @api {delete} /conta/:id Exclui uma conta
@@ -279,22 +202,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.delete('/conta/:id', validate(vConta.delete), (req, res) => {
-
-        Conta.destroy({
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
-            }
-        }).then(result => {
-            return res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.exclusao', t('label').conta)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.delete('/conta/:id', validate(vConta.delete), app.controllers.conta.removerConta);
 
     // Interceptador para retorno das chamadas que possuem erros gerados pelo express-validation
     app.use(tratamentoErro.verifiqueErrosDeValidacao);

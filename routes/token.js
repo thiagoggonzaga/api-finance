@@ -1,12 +1,8 @@
-var jwt = require('jwt-simple');
 var vUsuario = require('./validation/usuario');
 var validate = require('express-validation');
 var tratamentoErro = require('../componentes/tratamentoErros');
 
 module.exports = app => {
-    const cfg = app.configs.config;
-    const Usuario = app.db.models.Usuario;
-
     /**
      * @api {post} /token Token autenticado
      * @apiVersion 1.0.0
@@ -37,33 +33,7 @@ module.exports = app => {
      * @apiErrorExample {json} Erro de autenticação
      *      HTTP/1.1 401 Unauthorized
      */
-    app.post('/token', validate(vUsuario.token), (req, res) => {
-
-        Usuario.findOne({
-            where: {
-                email: req.body.email
-            }
-        }).then(usuario => {
-
-            if (Usuario.isPassword(usuario.senha, req.body.senha)) {
-                let payload = {
-                    codigo: usuario.codigo,
-                    data: new Date()
-                };
-
-                // Cria o token do usuário logado
-                usuario.dataValues.token = jwt.encode(payload, cfg.jwtSecret);
-
-                // Remove a senha do usuário antes de retornar para a view
-                delete usuario.dataValues.senha;
-
-                // Retorna os dados dos usuários
-                res.json(usuario);
-            } else {
-                res.sendStatus(401); // Não Autorizado
-            }
-        }).catch(error => res.sendStatus(401));
-    });
+    app.post('/token', validate(vUsuario.token), app.controllers.usuario.solicitarTokenAutorizacao);
 
     // Interceptador para retorno das chamadas que possuem erros gerados pelo express-validation
     app.use(tratamentoErro.verifiqueErrosDeValidacao);

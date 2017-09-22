@@ -1,13 +1,10 @@
 var validate = require('express-validation');
 var vCategoria = require('./validation/categoria');
 var tratamentoErro = require('../componentes/tratamentoErros');
-var sequelize = require('sequelize');
 
 module.exports = app => {
-    const Categoria = app.db.models.Categoria;
-    const ServicoCategoria = app.services.categoria;
-    const config = app.configs.config;
 
+    // Rotas c/ Autorizações
     app.route('/categoria').all(app.auth.authenticate());
     app.route('/categoria/:id').all(app.auth.authenticate());
 
@@ -54,32 +51,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.get("/categoria", validate(vCategoria.get), (req, res) => {
-        let limit = config.query.getLimit(req.query.limit);
-        let offset = req.query.offset || config.query.offset;
-
-        Categoria.findAndCountAll({
-            attributes: ['codigo', 'nome', 'tipo'],
-            where: {
-                nome: sequelize.where(sequelize.fn('lower', sequelize.col('nome')), {
-                    $like: sequelize.fn('lower', '%' + (req.query.nome || '')  + '%')
-                }),
-                cod_usuario: req.user.codigo
-            },
-            order: ['nome'],
-            limit: limit,
-            offset: offset
-        }).then(result => {
-            res.json({
-                total: result.count,
-                limit: limit,
-                offset: offset,
-                data: result.rows
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.get("/categoria", validate(vCategoria.get), app.controllers.categoria.listarCategorias);
 
     /**
      * @api {post} /categoria Cadastro de Categorias
@@ -124,27 +96,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.post('/categoria', validate(vCategoria.post), function (req, res) {
-        // Seta o ID do usuário logado para criação da categoria
-        req.body.cod_usuario = req.user.codigo;
-
-        ServicoCategoria.existeCategoriaComMesmoNomeEhTipo(req.body).then(categoriaExistente => {
-
-            if (!categoriaExistente) {
-                Categoria.create(req.body).then(result => {
-                    res.json(result)
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
-                });
-            } else {
-                res.status(412).json({
-                    sucesso: false,
-                    mensagem: t('categoria').categoriaExistente
-                });
-            }
-        });
-
-    });
+    app.post('/categoria', validate(vCategoria.post), app.controllers.categoria.cadastrarCategoria);
 
     /**
      * @api {get} /categoria/:id Obter categoria
@@ -175,22 +127,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.get('/categoria/:id', validate(vCategoria.delete), (req, res) => {
-        Categoria.findOne({
-            attributes: ['codigo', 'nome', 'tipo'],
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
-            }
-        }).then(result => {
-            if (result) {
-                return res.json(result);
-            }
-            return res.sendStatus(404);
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.get('/categoria/:id', validate(vCategoria.delete), app.controllers.categoria.obterCategoriaPorCodigo);
 
     /**
      * @api {put} /categoria/:id Atualiza uma Categoria
@@ -234,21 +171,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.put('/categoria/:id', validate(vCategoria.post), (req, res) => {
-        Categoria.update(req.body, {
-            where: {
-                codigo: req.params.id,
-                cod_usuario: req.user.codigo
-            }
-        }).then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.atualizacao', t('label').categoria)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
-        });
-    });
+    app.put('/categoria/:id', validate(vCategoria.post), app.controllers.categoria.atualizarCategoria);
 
     /**
      * @api {delete} /categoria/:id Exclui uma categoria
@@ -271,32 +194,7 @@ module.exports = app => {
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
      */
-    app.delete('/categoria/:id', validate(vCategoria.delete), (req, res) => {
-
-        ServicoCategoria.categoriaVinculadoLancamento(req.params.id, req.user.codigo).then((possuiVinculo) => {
-
-            if (!possuiVinculo) {
-                Categoria.destroy({
-                    where: {
-                        codigo: req.params.id,
-                        cod_usuario: req.user.codigo
-                    }
-                }).then(result => {
-                    return res.json({
-                        sucesso: true,
-                        mensagem: __mf('mensagem.exclusao', t('label').categoria)
-                    });
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
-                });
-            } else {
-                res.status(412).json({
-                    sucesso: false,
-                    mensagem: t('categoria').vinculadaLancamento
-                });
-            }
-        });
-    });
+    app.delete('/categoria/:id', validate(vCategoria.delete), app.controllers.categoria.removerCategoria);
 
     // Interceptador para retorno das chamadas que possuem erros gerados pelo express-validation
     app.use(tratamentoErro.verifiqueErrosDeValidacao);
