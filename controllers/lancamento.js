@@ -16,7 +16,10 @@ module.exports = app => {
         };
 
         let whereCategoria = {
-            cod_usuario: req.user.codigo
+            cod_usuario: req.user.codigo,
+            tipo: {
+                $in: req.query.tipo != null ? [req.query.tipo] : [0, 1]
+            }
         };
 
         // Prepara filtro da categoria
@@ -30,9 +33,9 @@ module.exports = app => {
         }
 
         Lancamento.findAndCountAll({
-            attributes: ['codigo', 'descricao', 'valor', 'tipo', 'data_emissao', 'data_vencimento'],
+            attributes: ['codigo', 'descricao', 'valor', 'data_emissao', 'data_vencimento'],
             include: [{
-                attributes: ['codigo', 'nome'],
+                attributes: ['codigo', 'nome', 'tipo'],
                 model: Categoria,
                 as: 'categoria',
                 required: true,
@@ -48,12 +51,12 @@ module.exports = app => {
                 descricao: sequelize.where(sequelize.fn('lower', sequelize.col('descricao')), {
                     $like: sequelize.fn('lower', '%' + (req.query.descricao || '') + '%')
                 }),
-                cod_usuario: req.user.codigo,
-                tipo: {
-                    $in: req.query.tipo != null ? [req.query.tipo] : [0, 1]
-                }
+                cod_usuario: req.user.codigo
             },
-            order: ['tipo', 'descricao'],
+            order: [
+                ['categoria', 'tipo', 'ASC'],
+                ['descricao']
+            ],
             limit: limit,
             offset: offset
         }).then(result => {
@@ -81,10 +84,7 @@ module.exports = app => {
             if (validacao.sucesso) {
 
                 Lancamento.create(req.body).then(result => {
-                    res.json({
-                        sucesso: true,
-                        codigo: result.codigo
-                    });
+                    res.status(201).json(result);
                 }).catch(error => {
                     res.status(412).json({ msg: error.message });
                 });
@@ -96,9 +96,9 @@ module.exports = app => {
 
     var obterLancamento = (req, res) => {
         Lancamento.findOne({
-            attributes: ['codigo', 'descricao', 'valor', 'tipo', 'data_emissao', 'data_vencimento'],
+            attributes: ['codigo', 'descricao', 'valor', 'data_emissao', 'data_vencimento'],
             include: [{
-                attributes: ['codigo', 'nome'],
+                attributes: ['codigo', 'nome', 'tipo'],
                 model: Categoria,
                 as: 'categoria',
                 required: true,
@@ -136,42 +136,61 @@ module.exports = app => {
         req.body.dataVencimento = req.body.data_vencimento;
         req.body.dataEmissao = req.body.data_emissao;
 
-        ServicoLancamento.dadosAssociadosEstaoValidos(req.body).then((validacao) => {
+        // Só atualiza um item que exista
+        Lancamento.count({
+            where: {
+                codigo: req.params.id,
+                cod_usuario: req.user.codigo
+            }
+        }).then(total => {
 
-            if (validacao.sucesso) {
-                Lancamento.update(req.body, {
-                    where: {
-                        codigo: req.params.id,
-                        cod_usuario: req.user.codigo
+            if (total > 0) {
+                ServicoLancamento.dadosAssociadosEstaoValidos(req.body).then((validacao) => {
+                    if (validacao.sucesso) {
+                        Lancamento.update(req.body, {
+                            where: {
+                                codigo: req.params.id,
+                                cod_usuario: req.user.codigo
+                            }
+                        }).then(function (result) {
+                            res.sendStatus(204);
+                        }).catch(error => {
+                            res.status(412).json({ msg: error.message });
+                        });
+                    } else {
+                        res.status(412).json(validacao);
                     }
-                }).then(function (result) {
-                    res.json({
-                        sucesso: true,
-                        mensagem: __mf('mensagem.atualizacao', t('label').lancamento)
-                    });
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
                 });
             } else {
-                res.status(412).json(validacao);
+                res.sendStatus(404);
             }
         });
     };
 
     var deletarLancamento = (req, res) => {
 
-        Lancamento.destroy({
+        // Só remove um item que exista
+        Lancamento.count({
             where: {
                 codigo: req.params.id,
                 cod_usuario: req.user.codigo
             }
-        }).then(result => {
-            return res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.exclusao', t('label').lancamento)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
+        }).then(total => {
+
+            if (total > 0) {
+                Lancamento.destroy({
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(result => {
+                    return res.sendStatus(204);
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.sendStatus(404);
+            }
         });
     };
 

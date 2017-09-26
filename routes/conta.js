@@ -12,6 +12,7 @@ module.exports = app => {
      * @api {get} /conta Lista de Contas
      * @apiVersion 1.0.0
      * @apiGroup Conta
+     * @apiDescription Listar as contas do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Exemplo
      *      { 
@@ -50,7 +51,7 @@ module.exports = app => {
      *              situacao: 0
      *          }]
      *      }
-     * @apiErrorExample {json} Erro de consulta
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
@@ -61,6 +62,7 @@ module.exports = app => {
      * @api {post} /conta Cadastro de Contas
      * @apiVersion 1.0.0
      * @apiGroup Conta
+     * @apiDescription Incluir uma nova conta para controle de despesas/receitas do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -78,7 +80,7 @@ module.exports = app => {
      * @apiSuccess {Number="0 - Conta Corrente", "1 - Conta Poupança", "2 - Cartão de Crédito"} tipo Tipo da conta
      * @apiSuccess {Number="0 - Ativo", "1 - Inativo"} situacao Situação da conta
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200 OK
+     *      HTTP/1.1 201 Created
      *      {
      *          codigo: 1,
      *          nome: 'Banco do Brasil',
@@ -107,6 +109,7 @@ module.exports = app => {
      * @api {get} /conta/:id Obter conta
      * @apiVersion 1.0.0
      * @apiGroup Conta
+     * @apiDescription Obter conta do usuário utilizando o código de registro.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -129,7 +132,7 @@ module.exports = app => {
      *      }
      * @apiErrorExample {json} Conta não existe
      *      HTTP/1.1 404 Not Found
-     * @apiErrorExample {json} Erro de consulta
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
@@ -140,6 +143,7 @@ module.exports = app => {
      * @api {put} /conta/:id Atualiza uma Conta
      * @apiVersion 1.0.0
      * @apiGroup Conta
+     * @apiDescription Atualizar os dados da conta do usuário utilizando o código de registro.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -158,11 +162,7 @@ module.exports = app => {
      *          situacao: 0
      *      }
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200
-     *      {
-     *          sucesso: true,
-     *          mensagem: 'Conta atualizada com sucesso'
-     *      }
+     *      HTTP/1.1 204 No Content
      * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      *      {
@@ -178,6 +178,8 @@ module.exports = app => {
      *      }
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
+     * @apiErrorExample Conta não encontrada
+     *      HTTP/1.1 404 Not Found
      */
     app.put('/conta/:id', validate(vConta.post), app.controllers.conta.atualizarConta);
 
@@ -185,6 +187,8 @@ module.exports = app => {
      * @api {delete} /conta/:id Exclui uma conta
      * @apiVersion 1.0.0
      * @apiGroup Conta
+     * @apiDescription Remover uma conta do usuário utilizando o código de registro.
+     *                 Observação: Todos os lançamentos vinculados serão removidos.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -192,15 +196,13 @@ module.exports = app => {
      *      }
      * @apiParam (Query Params) {Number} id Código da conta [Obrigatório]
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200
-     *      {
-     *          sucesso: true,
-     *          mensagem: 'Conta removida com sucesso'
-     *      }
-     * @apiErrorExample {json} Erro de consulta
+     *      HTTP/1.1 204 No Content
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
+     * @apiErrorExample Conta não encontrada
+     *      HTTP/1.1 404 Not Found
      */
     app.delete('/conta/:id', validate(vConta.delete), app.controllers.conta.removerConta);
 

@@ -41,7 +41,7 @@ module.exports = app => {
 
             if (!contaExistente) {
                 Conta.create(req.body).then(result => {
-                    res.json(result)
+                    res.status(201).json(result)
                 }).catch(error => {
                     res.status(412).json({ msg: error.message });
                 });
@@ -72,35 +72,55 @@ module.exports = app => {
     };
 
     var atualizarConta = (req, res) => {
-        Conta.update(req.body, {
+        // Só atualiza um item que exista
+        Conta.count({
             where: {
                 codigo: req.params.id,
                 cod_usuario: req.user.codigo
             }
-        }).then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.atualizacao', t('label').conta)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
+        }).then(total => {
+
+            if (total > 0) {
+                Conta.update(req.body, {
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(function (result) {
+                    res.sendStatus(201);
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.sendStatus(404);
+            }
         });
     };
 
     var removerConta = (req, res) => {
 
-        Conta.destroy({
+        // Só remove um item que exista
+        Conta.count({
             where: {
                 codigo: req.params.id,
                 cod_usuario: req.user.codigo
             }
-        }).then(result => {
-            return res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.exclusao', t('label').conta)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
+        }).then(total => {
+
+            if (total > 0) {
+                Conta.destroy({
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(result => {
+                    return res.sendStatus(201);
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.sendStatus(404);
+            }
         });
     };
 

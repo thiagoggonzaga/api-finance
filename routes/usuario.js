@@ -8,6 +8,7 @@ module.exports = app => {
      * @api {get} /usuario Exibe usuário autenticado
      * @apiVersion 1.0.0
      * @apiGroup Usuario
+     * @apiDescription Obter os dados do usuário a partir do token informado no Header da requisição.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -38,6 +39,7 @@ module.exports = app => {
      * @api {post} /usuario Cadastra novo usuário
      * @apiVersion 1.0.0
      * @apiGroup Usuario
+     * @apiDescription Incluir um novo usuário para uso da API.
      * @apiParam {String} nome Nome do Usuário
      * @apiParam {String} email Email de acesso
      * @apiParam {String} senha Senha para acesso a api
@@ -53,7 +55,7 @@ module.exports = app => {
      * @apiSuccess {String} dataCadastro Data do cadastro do usuário
      * @apiSuccess {Number="0 - Ativo", "1 - Inativo"} situacao Situação do usuário
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200 OK
+     *      HTTP/1.1 201 Created
      *      {
      *          codigo: 1,
      *          nome: 'Thiago G. Gonzaga',
@@ -61,10 +63,10 @@ module.exports = app => {
      *          dataCadastro: "2017-09-13T23:42:35.000Z",
      *          situacao: 0
      *      }
-     * @apiErrorExample {json} Erro no cadastro
+     * @apiErrorExample {json} Pré-condição não preenchida
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} E-mail existente
-     *      HTTP/1.1 412 
+     *      HTTP/1.1 412 Precondition Failed
      *      {
      *          sucesso: false,
      *          mensagem: 'E-mail já está sendo utilizado.'

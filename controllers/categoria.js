@@ -13,7 +13,7 @@ module.exports = app => {
             attributes: ['codigo', 'nome', 'tipo'],
             where: {
                 nome: sequelize.where(sequelize.fn('lower', sequelize.col('nome')), {
-                    $like: sequelize.fn('lower', '%' + (req.query.nome || '')  + '%')
+                    $like: sequelize.fn('lower', '%' + (req.query.nome || '') + '%')
                 }),
                 cod_usuario: req.user.codigo
             },
@@ -40,7 +40,7 @@ module.exports = app => {
 
             if (!categoriaExistente) {
                 Categoria.create(req.body).then(result => {
-                    res.json(result)
+                    res.status(201).json(result)
                 }).catch(error => {
                     res.status(412).json({ msg: error.message });
                 });
@@ -72,44 +72,65 @@ module.exports = app => {
     };
 
     var atualizarCategoria = (req, res) => {
-        Categoria.update(req.body, {
+
+        // Só atualiza um item que exista
+        Categoria.count({
             where: {
                 codigo: req.params.id,
                 cod_usuario: req.user.codigo
             }
-        }).then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: __mf('mensagem.atualizacao', t('label').categoria)
-            });
-        }).catch(error => {
-            res.status(412).json({ msg: error.message });
+        }).then(total => {
+
+            if (total > 0) {
+                Categoria.update(req.body, {
+                    where: {
+                        codigo: req.params.id,
+                        cod_usuario: req.user.codigo
+                    }
+                }).then(function (result) {
+                    res.sendStatus(204);
+                }).catch(error => {
+                    res.status(412).json({ msg: error.message });
+                });
+            } else {
+                res.sendStatus(404);
+            }
         });
     };
 
     var removerCategoria = (req, res) => {
 
-        ServicoCategoria.categoriaVinculadoLancamento(req.params.id, req.user.codigo).then((possuiVinculo) => {
+        // Só remove um item que exista
+        Categoria.count({
+            where: {
+                codigo: req.params.id,
+                cod_usuario: req.user.codigo
+            }
+        }).then(total => {
 
-            if (!possuiVinculo) {
-                Categoria.destroy({
-                    where: {
-                        codigo: req.params.id,
-                        cod_usuario: req.user.codigo
+            if (total > 0) {
+                ServicoCategoria.categoriaVinculadoLancamento(req.params.id, req.user.codigo).then((possuiVinculo) => {
+
+                    if (!possuiVinculo) {
+                        Categoria.destroy({
+                            where: {
+                                codigo: req.params.id,
+                                cod_usuario: req.user.codigo
+                            }
+                        }).then(result => {
+                            return res.sendStatus(204);
+                        }).catch(error => {
+                            res.status(412).json({ msg: error.message });
+                        });
+                    } else {
+                        res.status(412).json({
+                            sucesso: false,
+                            mensagem: t('categoria').vinculadaLancamento
+                        });
                     }
-                }).then(result => {
-                    return res.json({
-                        sucesso: true,
-                        mensagem: __mf('mensagem.exclusao', t('label').categoria)
-                    });
-                }).catch(error => {
-                    res.status(412).json({ msg: error.message });
                 });
             } else {
-                res.status(412).json({
-                    sucesso: false,
-                    mensagem: t('categoria').vinculadaLancamento
-                });
+                res.sendStatus(404);
             }
         });
     };

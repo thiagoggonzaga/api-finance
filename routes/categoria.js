@@ -12,6 +12,7 @@ module.exports = app => {
      * @api {get} /categoria Lista de Categorias
      * @apiVersion 1.0.0
      * @apiGroup Categoria
+     * @apiDescription Listar as categorias do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Exemplo
      *      { 
@@ -46,7 +47,7 @@ module.exports = app => {
      *              tipo: 1
      *          }]
      *      }
-     * @apiErrorExample {json} Erro de consulta
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
@@ -57,6 +58,7 @@ module.exports = app => {
      * @api {post} /categoria Cadastro de Categorias
      * @apiVersion 1.0.0
      * @apiGroup Categoria
+     * @apiDescription Incluir uma nova categoria de lançamentos do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -73,7 +75,7 @@ module.exports = app => {
      * @apiSuccess {String} nome Nome da categoria
      * @apiSuccess {Number="0 - Despesa", "1 - Receita"} tipo Tipo da categoria
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200 OK
+     *      HTTP/1.1 201 Created
      *      {
      *          codigo: 1,
      *          nome: 'Transporte',
@@ -102,6 +104,7 @@ module.exports = app => {
      * @api {get} /categoria/:id Obter categoria
      * @apiVersion 1.0.0
      * @apiGroup Categoria
+     * @apiDescription Obter uma categoria do usuário utilizando o código de registro.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -122,7 +125,7 @@ module.exports = app => {
      *      }
      * @apiErrorExample {json} Categoria não existe
      *      HTTP/1.1 404 Not Found
-     * @apiErrorExample {json} Erro de consulta
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
@@ -133,6 +136,7 @@ module.exports = app => {
      * @api {put} /categoria/:id Atualiza uma Categoria
      * @apiVersion 1.0.0
      * @apiGroup Categoria
+     * @apiDescription Atualizar os dados de uma Categoria do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -149,11 +153,7 @@ module.exports = app => {
      *          tipo: 0
      *      }
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200
-     *      {
-     *          sucesso: true,
-     *          mensagem: 'Categoria atualizada com sucesso'
-     *      }
+     *      HTTP/1.1 204 No Content
      * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      *      {
@@ -170,6 +170,8 @@ module.exports = app => {
      *      }
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
+     * @apiErrorExample Categoria não encontrada
+     *      HTTP/1.1 404 Not Found
      */
     app.put('/categoria/:id', validate(vCategoria.post), app.controllers.categoria.atualizarCategoria);
 
@@ -177,6 +179,7 @@ module.exports = app => {
      * @api {delete} /categoria/:id Exclui uma categoria
      * @apiVersion 1.0.0
      * @apiGroup Categoria
+     * @apiDescription Remover uma categoria do usuário.
      * @apiHeader {String} Authorization Token de usuário
      * @apiHeaderExample {json} Header
      *      { 
@@ -184,15 +187,13 @@ module.exports = app => {
      *      }
      * @apiParam (Query Params) {Number} id Código da categoria [Obrigatório]
      * @apiSuccessExample {json} Sucesso
-     *      HTTP/1.1 200
-     *      {
-     *          sucesso: true,
-     *          mensagem: 'Categoria removida com sucesso'
-     *      }
-     * @apiErrorExample {json} Erro de consulta
+     *      HTTP/1.1 204 No Content
+     * @apiErrorExample {json} Pré-requisitos não preenchidos
      *      HTTP/1.1 412 Precondition Failed
      * @apiErrorExample {json} Usuário não autenticado
      *      HTTP/1.1 401 Unauthorized
+     * @apiErrorExample Categoria não encontrada
+     *      HTTP/1.1 404 Not Found
      */
     app.delete('/categoria/:id', validate(vCategoria.delete), app.controllers.categoria.removerCategoria);
 

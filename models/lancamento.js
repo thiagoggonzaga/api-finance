@@ -19,12 +19,6 @@ module.exports = (sequelize, DataType) => {
 			allowNull: false,
 			field: 'valor'
 		},
-		tipo: {
-			type: DataType.INTEGER,
-			allowNull: false,
-			defaultValue: 0,
-			field: 'tipo'
-		},
 		dataEmissao: {
 			type: DataType.DATEONLY,
 			allowNull: true,

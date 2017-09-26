@@ -7,6 +7,7 @@ module.exports = app => {
      * @api {post} /token Token autenticado
      * @apiVersion 1.0.0
      * @apiGroup Credencial
+     * @apiDescription Obter um token de autenticação do usuário para consumo dos demais serviços disponibilizados pela API.
      * @apiParam {String} email Email de usuário
      * @apiParam {String} senha Senha de usuário
      * @apiParamExample {json} Exemplo

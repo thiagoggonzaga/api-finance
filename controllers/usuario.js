@@ -22,7 +22,7 @@ module.exports = app => {
                 Usuario.create(req.body).then(result => {
                     // Remove a senha criptografada por motivos de segurança
                     delete result.dataValues.senha;
-                    res.json(result);
+                    res.status(201).json(result);
                 }).catch(error => {
                     res.status(412).json({ msg: error.message });
                 });
@@ -46,7 +46,7 @@ module.exports = app => {
             }
         }).then(usuario => {
 
-            if (Usuario.isPassword(usuario.senha, req.body.senha)) {
+            if (usuario && Usuario.isPassword(usuario.senha, req.body.senha)) {
                 let payload = {
                     codigo: usuario.codigo,
                     data: new Date()
